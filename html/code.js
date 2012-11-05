@@ -26,7 +26,7 @@ var
 	minYear =  1e10,
 	maxYear = -1e10,
 	tableList = [],
-	yearButtonList = [];
+	slider;
 	
 var frame = 0;
 
@@ -103,29 +103,20 @@ function init() {
 		})());
 	}
 	
-	for (var i = minYear; i <= maxYear; i++) {
-		var button = $('<span class="button">'+i+'</span>');
-		$('#slider').append(button);
-		var f = 
-		button.mousedown((function () {
-			var id = i;
-			return function () {
-				sliderMousePressed = true;
-				selectYear(id);
-				return false;
-			}
-		})());
-		button.mousemove((function () {
-			var id = i;
-			return function (e) {
-				if (sliderMousePressed) selectYear(id);
-				return false;
-			}
-		})());
-		yearButtonList[i] = button;
-	}
-	
 	$(document).mouseup(function () { sliderMousePressed = false })
+	
+	slider = $('#slider-element').slider({
+		min: minYear,
+		max: maxYear,
+		slide: function( event, ui ) {
+			$("#slider-selection").html(ui.value);
+			selectYear(ui.value);
+		},
+		change: function( event, ui ) {
+			$("#slider-selection").html(ui.value);
+		}
+	});
+		
 }
 
 
@@ -141,8 +132,7 @@ function selectYear(year) {
 	if (selectedYear < tableList[selectedTable].minYear) selectedYear = tableList[selectedTable].minYear;
 	if (selectedYear > tableList[selectedTable].maxYear) selectedYear = tableList[selectedTable].maxYear;
 	
-	for (var i = minYear; i <= maxYear; i++) yearButtonList[i].removeClass('selected');
-	yearButtonList[selectedYear].addClass('selected');
+	slider.slider('value', selectedYear);
 	
 	redraw();
 }
@@ -152,18 +142,16 @@ function selectTable(id) {
 	tableList[id].node.addClass('selected');
 	selectedTable = id;
 	
-	for (var i = minYear; i <= maxYear; i++) {
-		if (tableList[id].years[i] === undefined) {
-			yearButtonList[i].addClass('inactive');
-		} else {
-			yearButtonList[i].removeClass('inactive');
-		}
-	}
-	
 	var year = selectedYear;
 	if (year < tableList[selectedTable].minYear) year = tableList[selectedTable].minYear;
 	if (year > tableList[selectedTable].maxYear) year = tableList[selectedTable].maxYear;
 	selectYear(year);
+	
+	slider.slider("option", {
+		min: tableList[selectedTable].minYear,
+		max: tableList[selectedTable].maxYear,
+		value: year
+	});
 	
 	redraw();
 }
