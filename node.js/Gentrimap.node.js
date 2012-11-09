@@ -12,6 +12,9 @@ var DB = function () {
 		});
 		
 		var result = [];
+		var minValue =  1e10;
+		var maxValue = -1e10;
+		
 		data.forEach(function (obj) {
 			if (options.filterFunction(obj)) {
 				var value = options.valueFunction(obj);
@@ -21,9 +24,14 @@ var DB = function () {
 						value: value,
 						geoId: geoId
 					});
+					if (minValue > value) minValue = value;
+					if (maxValue < value) maxValue = value;
 				}
 			}
 		});
+		
+		if (options.minValue === undefined) options.minValue = minValue;
+		if (options.maxValue === undefined) options.maxValue = maxValue;
 		
 		if (result.length > 0) {
 			dataList.push({
