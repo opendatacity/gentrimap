@@ -55,10 +55,14 @@ var matrix = {
 		drawdata.axid[drawdata.tables[0]] = "y";
 		drawdata.axid[drawdata.tables[1]] = "x";
 		
-		if (matrix.olddata.length > 0 && matrix.olddata.x === drawdata.tables[0] && matrix.olddata.y === drawdata.tables[1] && matrix.olddata.z === drawdata.year) {
-			
-			return;
-			
+		var recyclingMode = false;
+		
+		if (matrix.olddata.x === drawdata.tables[0] && matrix.olddata.y === drawdata.tables[1]) {
+			if (matrix.olddata.z === drawdata.year) {
+				return;
+			} else {
+				recyclingMode = true;
+			}
 		}
 		
 		matrix.olddata.x = drawdata.tables[0];
@@ -85,10 +89,9 @@ var matrix = {
 			});
 		});
 		
-		/* clear paper */
 	
-		matrix.elements = [];
-		matrix.paper.clear();
+		
+		
 		
 		var xAxis = new Axis(
 			matrix.padding.left,
@@ -104,73 +107,91 @@ var matrix = {
 			drawdata.max.y
 		);
 		
-		/* axes drawing */
+		if (!recyclingMode) {
+			/* clear paper */
+			
+			matrix.elements = {};
+			matrix.paper.clear();
+			
+			/* axes drawing */
 		
-		// x-Axis
+			// x-Axis
+			
+			Raphael.g.axis(
+				xAxis.minPixel,
+				yAxis.minPixel,
+				xAxis.maxPixel-xAxis.minPixel,
+				xAxis.minValue,
+				xAxis.maxValue,
+				xAxis.tickCount-1,
+				0,
+				[],
+				"t",
+				2,
+				matrix.paper
+			).attr('stroke','#999999');
+			
+			matrix.paper.text(matrix.conf.width/2, matrix.conf.height-10, matrix.data.tables[drawdata.tables[1]].tableName).attr({"font-size":12});
+			
+			// y-Axis
+			
+			Raphael.g.axis(
+				xAxis.minPixel,
+				yAxis.minPixel,
+				yAxis.minPixel-yAxis.maxPixel,
+				yAxis.minValue,
+				yAxis.maxValue,
+				yAxis.tickCount-1,
+				1,
+				[],
+				"t",
+				2,
+				matrix.paper
+			).attr('stroke','#999999');
+	
+			matrix.paper.text(15, matrix.conf.height/2, matrix.data.tables[drawdata.tables[0]].tableName)
+				.attr({"font-size":12})
+				.transform('r-90');
 		
-		Raphael.g.axis(
-			xAxis.minPixel,
-			yAxis.minPixel,
-			xAxis.maxPixel-xAxis.minPixel,
-			xAxis.minValue,
-			xAxis.maxValue,
-			xAxis.tickCount-1,
-			0,
-			[],
-			"t",
-			2,
-			matrix.paper
-		).attr('stroke','#999999');
-		
-		matrix.paper.text(matrix.conf.width/2, matrix.conf.height-10, matrix.data.tables[drawdata.tables[1]].tableName).attr({"font-size":12});
-		
-		// y-Axis
-		
-		Raphael.g.axis(
-			xAxis.minPixel,
-			yAxis.minPixel,
-			yAxis.minPixel-yAxis.maxPixel,
-			yAxis.minValue,
-			yAxis.maxValue,
-			yAxis.tickCount-1,
-			1,
-			[],
-			"t",
-			2,
-			matrix.paper
-		).attr('stroke','#999999');
-
-		matrix.paper.text(15, matrix.conf.height/2, matrix.data.tables[drawdata.tables[0]].tableName)
-			.attr({"font-size":12})
-			.transform('r-90');
-		
+		}
 		/* data drawing */
 		
-		var item;
-		
 		for (var key in drawdata.data) {
-		
-			item = drawdata.data[key];
+			var item = drawdata.data[key];
+			item.draw = (item.x !== 0 && item.y !== 0);
 			
-			if (item.x !== 0 && item.y !== 0) {
-								
+			if (item.draw) {
 				item.drawx = xAxis.project(item.x);
 				item.drawy = yAxis.project(item.y);
 				
-				item.element = matrix.paper.circle(item.drawx,item.drawy,5);
-				
-				item.element.attr({
-					fill: '#124',
-					opacity: 0.3,
-					title: 'x: '+item.x+', y: '+item.y
-				});
-				
-				matrix.elements.push(item.element);
-				
+				if (recyclingMode && (matrix.elements[key] !== undefined)) {
+					matrix.elements[key].attr({
+						cx: item.drawx,
+						cy: item.drawy
+					}).show();
+				} else {
+					item.element = matrix.paper.circle(item.drawx,item.drawy,5);
+					
+					item.element.attr({
+						fill: '#124',
+						opacity: 0.3,
+						title: key
+					});
+					
+					matrix.elements[key] = item.element;
+				}
 			}
-		
 		}
 		
+		/* hide all unused elements */
+		if (recyclingMode) {
+			for (var key in matrix.elements) {
+				if ((drawdata.data[key] === undefined) || (!drawdata.data[key].draw)) {
+					//matrix.elements[key].attr('visibility', 'hidden');
+					matrix.elements[key].hide();
+				}
+			}
+		}
 	},
 	ui: function() {
 	
