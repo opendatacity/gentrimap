@@ -179,6 +179,8 @@ var matrix = {
 			matrix.redraw();
 		});
 		
+		matrix.redraw();
+		
 	},
 	uiupdate: function() {
 	
