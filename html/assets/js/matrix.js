@@ -54,31 +54,30 @@ var matrix = {
 		drawdata.axid[drawdata.tables[1]] = "x";
 		
 		$(drawdata.tables).each(function(idx,e){
+			var axisId = drawdata.axid[e];
 			
 			if (matrix.data.tables[e].years[drawdata.year] === undefined) {
-				
 				alert("FAIL!");
 				return;
-				
 			}
 			
-			drawdata.min[drawdata.axid[e]] = matrix.data.tables[e].minValue;
-			drawdata.max[drawdata.axid[e]] = matrix.data.tables[e].maxValue;
-			
-			var x = e;
+			var minValue = 0;
+			var maxValue = 0;
 			
 			$(data.data[matrix.data.tables[e].years[drawdata.year]].data).each(function(idx,d){
 
 				if (drawdata.data[d.geoIndex] === undefined) {
-					
 					drawdata.data[d.geoIndex] = {};
-					
 				}
 
-				drawdata.data[d.geoIndex][drawdata.axid[e]] = d.value;
+				drawdata.data[d.geoIndex][axisId] = d.value;
 				
+				if (minValue > d.value) minValue = d.value;
+				if (maxValue < d.value) maxValue = d.value;
 			});
 			
+			drawdata.min[axisId] = minValue;
+			drawdata.max[axisId] = maxValue;
 		});
 		
 		// console.log(drawdata);
@@ -101,6 +100,8 @@ var matrix = {
 			drawdata.min.y,
 			drawdata.max.y
 		);
+		
+		/* axes drawing */
 		
 		Raphael.g.axis(
 			xAxis.minPixel,
@@ -129,17 +130,6 @@ var matrix = {
 			2,
 			matrix.paper
 		).attr('stroke','#999999');
-				
-		/* axes drawing */
-		
-		/*var axwidth = (matrix.conf.width - 80);
-		var axheight = (matrix.conf.height - 80);
-		
-		var yrange = (drawdata.max.y-drawdata.min.y);
-		var xrange = (drawdata.max.x-drawdata.min.x);
-		
-		matrix.elements.push(Raphael.g.axis(40, (matrix.conf.height-40), axheight, drawdata.min.y, drawdata.max.y, yrange, 1, [], "t", 2, matrix.canvas).attr('stroke','#999999'));
-		matrix.elements.push(Raphael.g.axis(40, (matrix.conf.height-40), axwidth, drawdata.min.x, drawdata.max.x, xrange, 0, [], "t", 2, matrix.canvas).attr('stroke','#999999'));
 		
 		/* data drawing */
 		
@@ -300,9 +290,7 @@ var matrix = {
 					tableName: name,
 					years: [],
 					minYear:  1e10,
-					maxYear: -1e10,
-					minValue: 0,
-					maxValue: -1e10
+					maxYear: -1e10
 				}
 				obj[name] = matrix.data.table_index;
 				matrix.data.table_names[matrix.data.table_index] = name;
@@ -311,16 +299,6 @@ var matrix = {
 			tl.years[year] = i;
 			if (tl.minYear > year) tl.minYear = year;
 			if (tl.maxYear < year) tl.maxYear = year;
-
-			var d = data.data[i].data;
-			for (var j = 0; j < d.length; j++) {
-				var v = d[j].value;
-				if (tl.minValue > v) tl.minValue = v;
-				if (tl.maxValue < v) tl.maxValue = v;
-			}
-
-			if (data.data[i].options.minValue !== undefined) tl.minValue = data.data[i].options.minValue;
-			if (data.data[i].options.maxValue !== undefined) tl.maxValue = data.data[i].options.maxValue; 
 		}
 		
 		/*
