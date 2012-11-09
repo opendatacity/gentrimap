@@ -184,7 +184,7 @@ var matrix = {
 					years: [],
 					minYear:  1e10,
 					maxYear: -1e10,
-					minValue: 1e10,
+					minValue: 0,
 					maxValue: -1e10
 				}
 				obj[name] = matrix.data.table_index;
