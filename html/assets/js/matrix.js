@@ -278,9 +278,11 @@ var matrix = {
 
 		matrix.slider.slider("option", {
 			min: parseInt(years[0]),
-			max: parseInt(years.pop()),
-			value: parseInt(selected)
+			max: parseInt(years.pop())
 		});
+		
+		$("#slider-selection").html(matrix.slider.slider("value"));
+		
 				
 	},
 	parse: function() {
