@@ -244,7 +244,6 @@ var matrix = {
 				$('#table_1').val($('#table_1 option:enabled').eq(0).attr('value'));
 
 			}
-
 			
 		},200);
 		
@@ -267,6 +266,10 @@ var matrix = {
 			}
 			
 		}
+		
+		$(yearsel).change(function(){
+			change();
+		});
 		
 		$('#year').replaceWith($(yearsel).attr('id','year'));
 		
