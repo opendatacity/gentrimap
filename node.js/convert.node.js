@@ -137,7 +137,7 @@ gmdb.addGeo(readGeoJSON('./geo/Planungsraum_25833.geojson').features, {
 
 gmdb.match();
 
-fs.writeFileSync('../html/assets/data/data.js', 'var data ='+JSON.stringify(gmdb.exportJSON(), null, '\t'), 'utf8');
+fs.writeFileSync('../html/assets/data/data.js', 'var data ='+JSON.stringify(gmdb.exportJSON() /*, null, '\t'*/), 'utf8');
 
 
 
