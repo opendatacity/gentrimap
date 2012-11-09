@@ -101,10 +101,38 @@ var matrix = {
 			drawdata.min.y,
 			drawdata.max.y
 		);
+		
+		Raphael.g.axis(
+			xAxis.minPixel,
+			yAxis.minPixel,
+			xAxis.maxPixel-xAxis.minPixel,
+			xAxis.minValue,
+			xAxis.maxValue,
+			xAxis.tickCount-1,
+			0,
+			[],
+			"t",
+			2,
+			matrix.paper
+		).attr('stroke','#999999');
+		
+		Raphael.g.axis(
+			xAxis.minPixel,
+			yAxis.minPixel,
+			yAxis.minPixel-yAxis.maxPixel,
+			yAxis.minValue,
+			yAxis.maxValue,
+			yAxis.tickCount-1,
+			1,
+			[],
+			"t",
+			2,
+			matrix.paper
+		).attr('stroke','#999999');
 				
 		/* axes drawing */
 		
-		var axwidth = (matrix.conf.width - 80);
+		/*var axwidth = (matrix.conf.width - 80);
 		var axheight = (matrix.conf.height - 80);
 		
 		var yrange = (drawdata.max.y-drawdata.min.y);
@@ -123,14 +151,16 @@ var matrix = {
 			
 			if (item.x !== 0 && item.y !== 0) {
 								
-				item.drawx = (40+(axwidth*((item.x-drawdata.min.x)/xrange)));
-				item.drawy = (matrix.conf.height-(40+(axheight*((item.y-drawdata.min.y)/yrange))));
+				item.drawx = xAxis.project(item.x);
+				item.drawy = yAxis.project(item.y);
 				
-				item.element = matrix.canvas.circle(item.drawx,item.drawy,5);
+				item.element = matrix.paper.circle(item.drawx,item.drawy,5);
 				
-				item.element.attr('fill','#cccccc');
-				item.element.attr('stroke','#999999');
-				item.element.attr('title','x: '+item.x+', y: '+item.y);
+				item.element.attr({
+					fill: '#124',
+					opacity: 0.3,
+					title: 'x: '+item.x+', y: '+item.y
+				});
 				
 				matrix.elements.push(item.element);
 				
@@ -290,10 +320,9 @@ var matrix = {
 var Axis = function (pixelMin, pixelMax, valueMin, valueMax) {
 	var pixelWidth = Math.abs(pixelMax - pixelMin);
 	var valueWidth = Math.abs(valueMax - valueMin);
-	var valueDensity = pixelWidth/valueWidth;
 	
 	var minTickSpace = 80;
-	var step = valueDensity*minTickSpace;
+	var step = valueWidth/pixelWidth*minTickSpace;
 	var e = Math.pow(10, Math.floor(Math.log(step)/Math.LN10));
 	var v = step/e; // (1.0 ... 9.999)
 	
@@ -314,10 +343,10 @@ var Axis = function (pixelMin, pixelMax, valueMin, valueMax) {
 	var minTickValue = Math.floor(valueMin/majorTick + 1e-8)*majorTick;
 	
 	var paramA = (pixelMax - pixelMin)/(valueMax - valueMin);
-	var paramB = (-valueMin)*a + pixelMin;
+	var paramB = (-valueMin)*paramA + pixelMin;
 		
 	function project(value) {
-		return value*a + b;
+		return value*paramA + paramB;
 	}
 	
 	
@@ -326,6 +355,9 @@ var Axis = function (pixelMin, pixelMax, valueMin, valueMax) {
 	me.minorTick = minorTick;
 	me.maxValue = maxTickValue;
 	me.minValue = minTickValue;
+	me.maxPixel = project(maxTickValue);
+	me.minPixel = project(minTickValue);
+	me.tickCount = Math.round(Math.abs(maxTickValue-minTickValue)/majorTick)+1;
 	me.project = project;
 	
 	return me;
