@@ -43,8 +43,8 @@ var matrix = {
 			
 		}
 		
-		drawdata.axid[drawdata.tables[0]] = "x";
-		drawdata.axid[drawdata.tables[1]] = "y";
+		drawdata.axid[drawdata.tables[0]] = "y";
+		drawdata.axid[drawdata.tables[1]] = "x";
 		
 		$(drawdata.tables).each(function(idx,e){
 			
@@ -107,7 +107,14 @@ var matrix = {
 								
 				item.drawx = (40+(axwidth*((item.x-drawdata.min.x)/xrange)));
 				item.drawy = (matrix.conf.height-(40+(axheight*((item.y-drawdata.min.y)/yrange))));
-				matrix.elements.push(matrix.canvas.circle(item.drawx,item.drawy,10));
+				
+				item.element = matrix.canvas.circle(item.drawx,item.drawy,5);
+				
+				item.element.attr('fill','#cccccc');
+				item.element.attr('stroke','#999999');
+				item.element.attr('title','x: '+item.x+', y: '+item.y);
+				
+				matrix.elements.push(item.element);
 				
 			}
 		
