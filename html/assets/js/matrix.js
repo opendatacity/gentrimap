@@ -267,8 +267,9 @@ var matrix = {
 			
 		}
 		
-		$(yearsel).change(function(){
-			change();
+		$(yearsel).change(function(el,evt) {
+			matrix.uiupdate();
+			matrix.controls.submit();
 		});
 		
 		$('#year').replaceWith($(yearsel).attr('id','year'));
