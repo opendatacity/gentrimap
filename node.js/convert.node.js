@@ -7,15 +7,17 @@ var merge = gm.merge;
 var data = readCSV('../../Daten/Daten normalisiert/Proto_CSV_Dateien/alter_1992_2011.csv', ';', ['ZEIT', 'Anzahl', 'Anteil', 'Fert']);
 
 var options = {
-	geoIdFunction: function (obj) { switch (obj.RAUMID.length) {
-		case 8:
-			return obj.RAUMID;
-		case 7:
-			return '0'+obj.RAUMID;
-		default:
-			console.error('Unknown length: '+obj.RAUMID.length+' ('+obj.RAUMID+')');
-		 	return undefined
-	} },
+	geoIdFunction: function (obj) {
+		switch (obj.RAUMID.length) {
+			case 8:
+				return obj.RAUMID;
+			case 7:
+				return '0'+obj.RAUMID;
+			default:
+				console.error('Unknown length: '+obj.RAUMID.length+' ('+obj.RAUMID+')');
+				return undefined
+		}
+	},
 	geoName: 'Planungsraum'
 };
 
@@ -62,17 +64,19 @@ for (var year = 1992; year <= 2011; year++) {
 var data = readCSV('../../Daten/Daten normalisiert/Proto_CSV_Dateien/Sozialmonitoring PLR 2007-2009.csv', ';', ['A', 'L', 'N', 'M', 'J']);
 
 var options = {
-	geoIdFunction: function (obj) { switch (obj.Raum.length) {
-		case 9:
-			return '0'+obj.Raum.substr(0,7);
-		case 8:
-			return obj.Raum;
-		case 7:
-			return '0'+obj.Raum;
-		default:
-			console.error('Unknown length: '+obj.Raum.length+' ('+obj.Raum+')');
-		 	return undefined
-	} },
+	geoIdFunction: function (obj) {
+		switch (obj.Raum.length) {
+			case 9:
+				return '0'+obj.Raum.substr(0,7);
+			case 8:
+				return obj.Raum;
+			case 7:
+				return '0'+obj.Raum;
+			default:
+				console.error('Unknown length: '+obj.Raum.length+' ('+obj.Raum+')');
+				return undefined
+		}
+	},
 	geoName: 'Planungsraum'
 };
 
@@ -131,7 +135,7 @@ gmdb.addGeo(readGeoJSON('./geo/Planungsraum_25833.geojson').features, {
 
 gmdb.match();
 
-fs.writeFileSync('../html/data.js', 'var data ='+JSON.stringify(gmdb.exportJSON(), null, '\t'), 'utf8');
+fs.writeFileSync('../html/data.js', 'var data ='+JSON.stringify(gmdb.exportJSON() /*, null, '\t'*/), 'utf8');
 
 
 
