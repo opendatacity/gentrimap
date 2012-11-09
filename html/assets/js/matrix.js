@@ -5,19 +5,25 @@ var matrix = {
 	data: {},
 	elements: [],
 	init: function() {
-		matrix.conf.width = $('#canvas').width();
-		matrix.conf.height = $('#canvas').height();
-		matrix.conf.ratio = matrix.conf.height / matrix.conf.width;
-		matrix.paper = Raphael('canvas', matrix.conf.width, matrix.conf.height);
-		matrix.controls = $('#controls');
-		matrix.padding = { top: 20, bottom: 30, left: 60, right: 30 };
+		matrix.configure();
 		
 		/* initialize data */
 		
 		matrix.parse();
 		matrix.ui();
 		
-		
+	},
+	configure: function() {
+		matrix.conf.width = $('#canvas').width();
+		matrix.conf.height = $('#canvas').height();
+		matrix.conf.ratio = matrix.conf.height / matrix.conf.width;
+		matrix.paper = Raphael('canvas', matrix.conf.width, matrix.conf.height);
+		matrix.controls = $('#controls');
+		matrix.padding = { top: 20, bottom: 30, left: 60, right: 30 };
+	},
+	reload: function() {
+		matrix.configure();
+		matrix.redraw();
 	},
 	redraw: function() {
 	
@@ -137,7 +143,6 @@ var matrix = {
 	
 		/* build controls ui */
 		
-		
 		var ui_select = $('<select name="table[]" class="table" size="1"></select>');
 		$(matrix.data.table_names).each(function(idx,e){
 			ui_select.append('<option value="'+idx+'">'+e+'</option>');
@@ -145,20 +150,26 @@ var matrix = {
 		
 		ui_select_2 = ui_select.clone()
 
-		var change = function() {
+		$(ui_select).attr("id","table_1");
+		$(ui_select_2).attr("id","table_2");
+
+		var change = function(el,evt) {
+
+			matrix.uiupdate();
 			matrix.controls.submit();
+
 		}
 
-		$(ui_select).change(function(){
-			change();
+		$(ui_select).change(function(event){
+			change(this,event);
 		});
 		
-		$(ui_select_2).change(function(){
-			change();
+		$(ui_select_2).change(function(event){
+			change(this,event);
 		});
 
-		matrix.controls.append(ui_select_2);
 		matrix.controls.append(ui_select);
+		matrix.controls.append(ui_select_2);
 		
 		/* fixme: year slider */
 		
@@ -168,6 +179,8 @@ var matrix = {
 			change();
 		});
 		
+		matrix.uiupdate();
+
 		matrix.controls.append(year_select);
 		
 		matrix.controls.append($('<input type="submit" value="Vergleichen" />'));
@@ -175,6 +188,33 @@ var matrix = {
 		matrix.controls.submit(function(x){
 			matrix.redraw();
 		});
+		
+	},
+	uiupdate: function() {
+	
+		$('#table_1 option:disabled').removeAttr('disabled');
+		$('#table_2 option:disabled').removeAttr('disabled');
+	
+		$('#table_2 option[value=\''+$('#table_1').val()+'\']').attr('disabled','disabled');
+		
+		if ($('#table_2 option[value=\''+$('#table_2').val()+'\']').attr('disabled')) {
+
+			$('#table_2').val($('#table_2 option:enabled').eq(0).attr('value'));
+
+		}
+
+		setTimeout(function(){
+
+			$('#table_1 option[value=\''+$('#table_2').val()+'\']').attr('disabled','disabled');
+
+			if ($('#table_1 option[value=\''+$('#table_1').val()+'\']').attr('disabled')) {
+
+				$('#table_1').val($('#table_1 option:enabled').eq(0).attr('value'));
+
+			}
+
+			
+		},200);
 		
 	},
 	parse: function() {
@@ -293,4 +333,8 @@ var Axis = function (pixelMin, pixelMax, valueMin, valueMax) {
 
 $(document).ready(function(){
 	matrix.init();
+});
+
+$(window).resize(function(){
+	matrix.reload();
 });

@@ -27,7 +27,7 @@ body, html {
 			left: 0px;
 			right: 0px;
 			top: 0px;
-			bottom: 150px;
+			bottom: 90px;
 			background-color: #f7f7f7;
 			
 		}
@@ -50,7 +50,7 @@ body, html {
 			left: 0px;
 			right: 0px;
 			bottom: 0px;
-			height: 100px;
+			height: 40px;
 			padding: 25px;
 			background-color: #ddd;
 			box-shadow: 0px 0px 30px -15px rgba(0,0,0,0.4) inset;
@@ -64,14 +64,14 @@ body, html {
 				width: 960px;
 				margin: 0px auto;
 				padding: 0px;
-				line-height: 100px;
-				height: 100px;
+				line-height: 40px;
+				height: 40px;
 				
 			}
 			
 				#controls select {
 					
-					max-width: 300px;
+					max-width: 250px;
 					margin-right: 10px;
 					
 				}
