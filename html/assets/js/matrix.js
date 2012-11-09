@@ -348,8 +348,8 @@ var Axis = function (pixelMin, pixelMax, valueMin, valueMax) {
 	var maxTickValue = Math.ceil( valueMax/majorTick - 1e-8)*majorTick;
 	var minTickValue = Math.floor(valueMin/majorTick + 1e-8)*majorTick;
 	
-	var paramA = (pixelMax - pixelMin)/(valueMax - valueMin);
-	var paramB = (-valueMin)*paramA + pixelMin;
+	var paramA = (pixelMax - pixelMin)/(maxTickValue - minTickValue);
+	var paramB = (-minTickValue)*paramA + pixelMin;
 		
 	function project(value) {
 		return value*paramA + paramB;
