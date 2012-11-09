@@ -77,12 +77,10 @@ var matrix = {
 		// console.log(drawdata);
 		
 		/* clear paper */
-
-		while (matrix.elements.length > 0) {
-			
-			matrix.elements.shift().remove();
-			
-		}
+	
+		matrix.elements = [];
+		matrix.paper.clear();
+		
 				
 		/* axes drawing */
 		
