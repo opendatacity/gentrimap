@@ -4,7 +4,9 @@ var gm = require('./Gentrimap.node.js');
 var gmdb = new gm.DB();
 var merge = gm.merge;
 
-var data = readCSV('../../Daten/Daten normalisiert/Proto_CSV_Dateien/alter_1992_2011.csv', ';', ['ZEIT', 'Anzahl', 'Anteil', 'Fert']);
+var dataFolder = '../../../5 Anwendungsdaten/Proto_CSV_Dateien/';
+
+var data = readCSV(dataFolder + 'alter_1992_2011.csv', ';', ['ZEIT', 'Anzahl', 'Anteil', 'Fert']);
 
 var options = {
 	geoIdFunction: function (obj) {
@@ -61,7 +63,7 @@ for (var year = 1992; year <= 2011; year++) {
 	}));
 }
 
-var data = readCSV('../../Daten/Daten normalisiert/Proto_CSV_Dateien/Sozialmonitoring PLR 2007-2009.csv', ';', ['A', 'L', 'N', 'M', 'J']);
+var data = readCSV(dataFolder + 'Sozialmonitoring PLR 2007-2009.csv', ';', ['A', 'L', 'N', 'M', 'J']);
 
 var options = {
 	geoIdFunction: function (obj) {
@@ -135,7 +137,7 @@ gmdb.addGeo(readGeoJSON('./geo/Planungsraum_25833.geojson').features, {
 
 gmdb.match();
 
-fs.writeFileSync('../html/data.js', 'var data ='+JSON.stringify(gmdb.exportJSON() /*, null, '\t'*/), 'utf8');
+fs.writeFileSync('../html/assets/data/data.js', 'var data ='+JSON.stringify(gmdb.exportJSON(), null, '\t'), 'utf8');
 
 
 

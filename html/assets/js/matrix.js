@@ -65,7 +65,7 @@ var matrix = {
 		matrix.olddata.y = drawdata.tables[1];
 		matrix.olddata.z = drawdata.year;
 		
-		$(drawdata.tables).each(function(idx,e){
+		$(drawdata.tables).each(function(idx, e){
 			var axisId = drawdata.axid[e];
 			
 			if (matrix.data.tables[e].years[drawdata.year] === undefined) {
@@ -73,8 +73,8 @@ var matrix = {
 				return;
 			}
 			
-			var minValue = 0;
-			var maxValue = 0;
+			drawdata.min[drawdata.axid[e]] = matrix.data.tables[e].minValue;
+			drawdata.max[drawdata.axid[e]] = matrix.data.tables[e].maxValue;
 			
 			$(data.data[matrix.data.tables[e].years[drawdata.year]].data).each(function(idx,d){
 
@@ -83,13 +83,7 @@ var matrix = {
 				}
 
 				drawdata.data[d.geoIndex][axisId] = d.value;
-				
-				if (minValue > d.value) minValue = d.value;
-				if (maxValue < d.value) maxValue = d.value;
 			});
-			
-			drawdata.min[axisId] = minValue;
-			drawdata.max[axisId] = maxValue;
 		});
 		
 		/* clear paper */
@@ -309,27 +303,41 @@ var matrix = {
 		/* datensätze */
 		
 		matrix.data.tables = [];
-		var obj = {};
+		
+		var tableName2Index = {};
+		
 		matrix.data.table_index = -1;
 		matrix.data.table_names = [];
+		
 		for (var i = 0; i < data.data.length; i++) {
 			var name = data.data[i].options.tableName;
 			var year = data.data[i].options.year;
-			if (obj[name] === undefined) {
+			if (tableName2Index[name] === undefined) {
 				matrix.data.table_index++;
 				matrix.data.tables[matrix.data.table_index] = {
 					tableName: name,
 					years: [],
 					minYear:  1e10,
-					maxYear: -1e10
+					maxYear: -1e10,
+					minValue: 0,
+					maxValue: 0
 				}
-				obj[name] = matrix.data.table_index;
+				tableName2Index[name] = matrix.data.table_index;
 				matrix.data.table_names[matrix.data.table_index] = name;
 			}
-			var tl = matrix.data.tables[obj[name]];
+			
+			var tl = matrix.data.tables[tableName2Index[name]];
 			tl.years[year] = i;
+			
 			if (tl.minYear > year) tl.minYear = year;
 			if (tl.maxYear < year) tl.maxYear = year;
+			
+			var values = data.data[i].data;
+			for (var j = 0; j < values.length; j++) {
+				value = values[j].value;
+				if (tl.minValue > value) tl.minValue = value;
+				if (tl.maxValue < value) tl.maxValue = value;
+			}
 		}
 		
 		/*
