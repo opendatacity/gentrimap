@@ -20,14 +20,107 @@ body, html {
 		
 	}
 	
+		#navigation-container {
+		
+			display: block;
+			position: absolute;
+			left: 0px;
+			right: 0px;
+			top: 0px;
+			height: 60px;
+			padding: 0px;
+			background-color: #ddd;
+			box-shadow: 0px -15px 30px -15px rgba(0,0,0,0.2) inset;
+		
+		}
+		
+			#navigation {
+				
+				display: block;
+				position: relative;
+				margin: 0px auto;
+				padding: 0px;
+				height: 60px;
+				width: 960px;
+				
+			}
+		
+			#navigation h1 {
+				
+				display: block;
+				position: relative;
+				float: left;
+				height: 60px;
+				line-height: 60px;
+				margin: 0px;
+				padding: 0px;
+				color: #333;
+				font-family: "Georgia", serif;
+				text-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+				
+			}
+			
+				#navigation ul {
+				
+					display: block;
+					position: relative;
+					float: left;
+					margin: 0px;
+					padding: 20px 20px 0px;
+					height: 40px;
+					list-style: none;
+				
+				}
+
+				#navigation ul li {
+
+					display: block;
+					position: relative;
+					float: left;
+					margin: 0px;
+					padding: 0px 10px;
+					height: 40px;
+					line-height: 40px;
+
+				}
+				
+					#navigation ul li a {
+					
+						display: block;
+						position: relative;
+						margin: 0px;
+						padding: 0px 10px;
+						height: 40px;
+						line-height: 40px;
+						background-color: #aaa;
+						color: #333;
+						text-decoration: none;
+						font-weight: bold;
+						box-shadow: 0px 0px 20px -10px rgba(0,0,0,0.2), 0px -10px 10px -10px rgba(0,0,0,0.2) inset;
+						-webkit-border-top-left-radius: 7px;
+						-webkit-border-top-right-radius: 7px;
+						-moz-border-radius-topleft: 7px;
+						-moz-border-radius-topright: 7px;
+						border-top-left-radius: 7px;
+						border-top-right-radius: 7px;
+						
+					}
+					
+						#navigation ul li.selected a {
+							
+							background-color: #f7f7f7;
+							box-shadow: 0px 0px 20px -10px rgba(0,0,0,0.2);
+							
+						}
+			
 		#canvas-container {
 			
 			display: block;
 			position: absolute;
 			left: 0px;
 			right: 0px;
-			top: 0px;
-			bottom: 90px;
+			top: 60px;
+			bottom: 60px;
 			background-color: #f7f7f7;
 			
 		}
@@ -50,10 +143,10 @@ body, html {
 			left: 0px;
 			right: 0px;
 			bottom: 0px;
-			height: 40px;
-			padding: 25px;
+			height: 30px;
+			padding: 15px;
 			background-color: #ddd;
-			box-shadow: 0px 0px 30px -15px rgba(0,0,0,0.4) inset;
+			box-shadow: 0px 15px 30px -15px rgba(0,0,0,0.2) inset;
 			
 		}
 		
@@ -64,8 +157,8 @@ body, html {
 				width: 960px;
 				margin: 0px auto;
 				padding: 0px;
-				line-height: 40px;
-				height: 40px;
+				line-height: 30px;
+				height: 30px;
 				
 			}
 			
