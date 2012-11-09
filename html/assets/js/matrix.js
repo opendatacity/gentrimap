@@ -6,6 +6,7 @@ var matrix = {
 	elements: [],
 	slider: false,
 	olddata: {},
+	changeyear: 0,
 	init: function() {
 		matrix.configure();
 		
@@ -38,7 +39,7 @@ var matrix = {
 			min: {},
 			max: {},
 			axid: {},
-			year: matrix.slider.slider("value")
+			year: matrix.changeyear
 		};
 	
 		$("select.table", matrix.controls).each(function(idx,e){
@@ -215,11 +216,16 @@ var matrix = {
 			slide: function( event, ui ) {
 				$("#slider-selection").html(ui.value);
 				if (ui.value !== matrix.slider.slider("value")) {
+					matrix.changeyear = ui.value;
 					matrix.controls.submit();
 				}
 			},
 			change: function( event, ui ) {
 				$("#slider-selection").html(ui.value);
+				if (ui.value !== matrix.slider.slider("value")) {
+					matrix.changeyear = ui.value;
+					matrix.controls.submit();
+				}
 			}
 		});
 
@@ -288,6 +294,7 @@ var matrix = {
 		
 		$("#slider-selection").html(matrix.slider.slider("value"));
 		
+		matrix.changeyear = matrix.slider.slider("value");
 				
 	},
 	parse: function() {
