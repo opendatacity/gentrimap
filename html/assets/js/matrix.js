@@ -5,6 +5,7 @@ var matrix = {
 	data: {},
 	elements: [],
 	slider: false,
+	olddata: {},
 	init: function() {
 		matrix.configure();
 		
@@ -53,6 +54,16 @@ var matrix = {
 		
 		drawdata.axid[drawdata.tables[0]] = "y";
 		drawdata.axid[drawdata.tables[1]] = "x";
+		
+		if (matrix.olddata.length > 0 && matrix.olddata.x === drawdata.tables[0] && matrix.olddata.y === drawdata.tables[1] && matrix.olddata.z === drawdata.year) {
+			
+			return;
+			
+		}
+		
+		matrix.olddata.x = drawdata.tables[0];
+		matrix.olddata.y = drawdata.tables[1];
+		matrix.olddata.z = drawdata.year;
 		
 		$(drawdata.tables).each(function(idx,e){
 			var axisId = drawdata.axid[e];
