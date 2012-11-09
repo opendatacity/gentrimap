@@ -8,10 +8,11 @@ var matrix = {
 		matrix.conf.width = $('#canvas').width();
 		matrix.conf.height = $('#canvas').height();
 		matrix.conf.ratio = matrix.conf.height / matrix.conf.width;
-		matrix.canvas = Raphael('canvas', matrix.conf.width, matrix.conf.height);
+		matrix.paper = Raphael('canvas', matrix.conf.width, matrix.conf.height);
 		matrix.controls = $('#controls');
+		matrix.padding = { top: 20, bottom: 30, left: 60, right: 30 };
 		
-		/* iniitialize data */
+		/* initialize data */
 		
 		matrix.parse();
 		matrix.ui();
@@ -81,6 +82,19 @@ var matrix = {
 		matrix.elements = [];
 		matrix.paper.clear();
 		
+		var xAxis = new Axis(
+			matrix.padding.left,
+			matrix.conf.width - matrix.padding.right,
+			drawdata.min.x,
+			drawdata.max.x
+		);
+		
+		var yAxis = new Axis(
+			matrix.conf.height - matrix.padding.bottom,
+			matrix.padding.top,
+			drawdata.min.y,
+			drawdata.max.y
+		);
 				
 		/* axes drawing */
 		
@@ -231,6 +245,50 @@ var matrix = {
 		
 		*/
 	}
+}
+
+var Axis = function (pixelMin, pixelMax, valueMin, valueMax) {
+	var pixelWidth = Math.abs(pixelMax - pixelMin);
+	var valueWidth = Math.abs(valueMax - valueMin);
+	var valueDensity = pixelWidth/valueWidth;
+	
+	var minTickSpace = 80;
+	var step = valueDensity*minTickSpace;
+	var e = Math.pow(10, Math.floor(Math.log(step)/Math.LN10));
+	var v = step/e; // (1.0 ... 9.999)
+	
+	var majorTick, minorTick;
+		
+	if (v < 2) {
+		majorTick =  2*e;
+		minorTick =  1*e;
+	} else if (v < 5) {
+		majorTick =  5*e;
+		minorTick =  1*e;
+	} else {
+		majorTick = 10*e;
+		minorTick =  2*e;
+	}
+	
+	var maxTickValue = Math.ceil( valueMax/majorTick - 1e-8)*majorTick;
+	var minTickValue = Math.floor(valueMin/majorTick + 1e-8)*majorTick;
+	
+	var paramA = (pixelMax - pixelMin)/(valueMax - valueMin);
+	var paramB = (-valueMin)*a + pixelMin;
+		
+	function project(value) {
+		return value*a + b;
+	}
+	
+	
+	var me = this;
+	me.majorTick = majorTick;
+	me.minorTick = minorTick;
+	me.maxValue = maxTickValue;
+	me.minValue = minTickValue;
+	me.project = project;
+	
+	return me;
 }
 
 $(document).ready(function(){
