@@ -248,6 +248,28 @@ var matrix = {
 			
 		},200);
 		
+		var yearsel = $('<select name="year" size="1"></select>');
+		
+		for (var year in matrix.data.tables[$('#table_1').val()].years) {
+
+			if (matrix.data.tables[$('#table_2').val()].years[year] !== undefined) {
+				
+				if ($('#year').val() === year) {
+					
+					$(yearsel).append($('<option value="'+year+'" selected="selected">'+year+'</option>'));
+					
+				} else {
+					
+					$(yearsel).append($('<option value="'+year+'">'+year+'</option>'));
+
+				}
+				
+			}
+			
+		}
+		
+		$('#year').replaceWith($(yearsel).attr('id','year'));
+		
 	},
 	parse: function() {
 		
