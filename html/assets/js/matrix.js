@@ -19,7 +19,7 @@ var matrix = {
 		matrix.conf.ratio = matrix.conf.height / matrix.conf.width;
 		matrix.paper = Raphael('canvas', matrix.conf.width, matrix.conf.height);
 		matrix.controls = $('#controls');
-		matrix.padding = { top: 20, bottom: 30, left: 60, right: 30 };
+		matrix.padding = { top: 20, bottom: 40, left: 60, right: 30 };
 	},
 	reload: function() {
 		matrix.configure();
@@ -80,8 +80,6 @@ var matrix = {
 			drawdata.max[axisId] = maxValue;
 		});
 		
-		// console.log(drawdata);
-		
 		/* clear paper */
 	
 		matrix.elements = [];
@@ -103,6 +101,8 @@ var matrix = {
 		
 		/* axes drawing */
 		
+		// x-Axis
+		
 		Raphael.g.axis(
 			xAxis.minPixel,
 			yAxis.minPixel,
@@ -117,6 +117,10 @@ var matrix = {
 			matrix.paper
 		).attr('stroke','#999999');
 		
+		matrix.paper.text(matrix.conf.width/2, matrix.conf.height-10, matrix.data.tables[drawdata.tables[1]].tableName).attr({"font-size":12});
+		
+		// y-Axis
+		
 		Raphael.g.axis(
 			xAxis.minPixel,
 			yAxis.minPixel,
@@ -130,6 +134,10 @@ var matrix = {
 			2,
 			matrix.paper
 		).attr('stroke','#999999');
+
+		matrix.paper.text(15, matrix.conf.height/2, matrix.data.tables[drawdata.tables[0]].tableName)
+			.attr({"font-size":12})
+			.transform('r-90');
 		
 		/* data drawing */
 		
