@@ -48,7 +48,6 @@ var matrix = {
 		
 		if (drawdata.tables[0] === drawdata.tables[1]) {
 			
-			alert("FAIL");
 			return;
 			
 		}
@@ -70,7 +69,6 @@ var matrix = {
 			var axisId = drawdata.axid[e];
 			
 			if (matrix.data.tables[e].years[drawdata.year] === undefined) {
-				alert("FAIL!");
 				return;
 			}
 			
