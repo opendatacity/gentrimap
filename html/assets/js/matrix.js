@@ -5,11 +5,8 @@ var matrix = {
 	data: {},
 	elements: [],
 	init: function() {
-		matrix.conf.width = $('#canvas').width();
-		matrix.conf.height = $('#canvas').height();
-		matrix.conf.ratio = matrix.conf.height / matrix.conf.width;
-		matrix.canvas = Raphael('canvas', matrix.conf.width, matrix.conf.height);
-		matrix.controls = $('#controls');
+
+		matrix.configure();
 		
 		/* iniitialize data */
 		
@@ -17,6 +14,17 @@ var matrix = {
 		matrix.ui();
 		
 		
+	},
+	configure: function() {
+		matrix.conf.width = $('#canvas').width();
+		matrix.conf.height = $('#canvas').height();
+		matrix.conf.ratio = matrix.conf.height / matrix.conf.width;
+		matrix.canvas = Raphael('canvas', matrix.conf.width, matrix.conf.height);
+		matrix.controls = $('#controls');
+	},
+	reload: function() {
+		matrix.configure();
+		matrix.redraw();
 	},
 	redraw: function() {
 	
@@ -237,4 +245,8 @@ var matrix = {
 
 $(document).ready(function(){
 	matrix.init();
+});
+
+$(window).resize(function(){
+	matrix.reload();
 });
