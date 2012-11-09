@@ -4,6 +4,7 @@ var matrix = {
 	controls: false,
 	data: {},
 	elements: [],
+	slider: false,
 	init: function() {
 		matrix.configure();
 		
@@ -36,7 +37,7 @@ var matrix = {
 			min: {},
 			max: {},
 			axid: {},
-			year: $('#year').val()
+			year: matrix.slider.slider("value")
 		};
 	
 		$("select.table", matrix.controls).each(function(idx,e){
@@ -181,19 +182,19 @@ var matrix = {
 		$(ui_select).attr("id","table_1");
 		$(ui_select_2).attr("id","table_2");
 
-		var change = function(el,evt) {
+		var change = function() {
 
 			matrix.uiupdate();
 			matrix.controls.submit();
 
 		}
 
-		$(ui_select).change(function(event){
-			change(this,event);
+		$(ui_select).change(function(){
+			change();
 		});
 		
-		$(ui_select_2).change(function(event){
-			change(this,event);
+		$(ui_select_2).change(function(){
+			change();
 		});
 
 		matrix.controls.append(ui_select);
@@ -201,17 +202,25 @@ var matrix = {
 		
 		/* fixme: year slider */
 		
-		var year_select = $('<select name="year" id="year" size="1"><option value="1992">1992</option><option value="1993">1993</option><option value="1994">1994</option><option value="1995">1995</option><option value="1996">1996</option><option value="1997">1997</option><option value="1998">1998</option><option value="1999">1999</option><option value="2000">2000</option><option value="2001">2001</option><option value="2002">2002</option><option value="2003">2003</option><option value="2004">2004</option><option value="2005">2005</option><option value="2006">2006</option><option value="2007">2007</option><option value="2008">2008</option><option value="2009">2009</option><option value="2010">2010</option><option value="2011">2011</option></select>')
+		matrix.controls.append($('<div id="slider-area"><div id="slider-element"></div><div id="slider-selection"></div></div>'));
 
-		$(year_select).change(function(){
-			change();
+		matrix.slider = $('#slider-element').slider({
+			min: 1992,
+			max: 2011,
+			slide: function( event, ui ) {
+				$("#slider-selection").html(ui.value);
+				if (ui.value !== matrix.slider.slider("value")) {
+					matrix.controls.submit();
+				}
+			},
+			change: function( event, ui ) {
+				$("#slider-selection").html(ui.value);
+			}
 		});
-		
-		matrix.uiupdate();
 
-		matrix.controls.append(year_select);
+		matrix.uiupdate();
 		
-		matrix.controls.append($('<input type="submit" value="Vergleichen" />'));
+		// matrix.controls.append($('<input type="submit" value="Vergleichen" />'));
 		
 		matrix.controls.submit(function(x){
 			matrix.redraw();
@@ -245,33 +254,34 @@ var matrix = {
 			
 		},200);
 		
-		var yearsel = $('<select name="year" size="1"></select>');
+		var years = [];
 		
 		for (var year in matrix.data.tables[$('#table_1').val()].years) {
 
 			if (matrix.data.tables[$('#table_2').val()].years[year] !== undefined) {
-				
-				if ($('#year').val() === year) {
-					
-					$(yearsel).append($('<option value="'+year+'" selected="selected">'+year+'</option>'));
-					
-				} else {
-					
-					$(yearsel).append($('<option value="'+year+'">'+year+'</option>'));
 
-				}
+				years.push(year);
 				
 			}
 			
 		}
 		
-		$(yearsel).change(function(el,evt) {
-			matrix.uiupdate();
-			matrix.controls.submit();
+		years.sort();
+		
+		var selected = matrix.slider.slider("value");
+		
+		if (years.indexOf(parseInt(selected)) === -1) {
+			
+			selected = years[0];
+			
+		}
+
+		matrix.slider.slider("option", {
+			min: parseInt(years[0]),
+			max: parseInt(years.pop()),
+			value: parseInt(selected)
 		});
-		
-		$('#year').replaceWith($(yearsel).attr('id','year'));
-		
+				
 	},
 	parse: function() {
 		
